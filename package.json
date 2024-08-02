@@ -10,21 +10,11 @@
   },
   "author": "author",
   "license": "MIT OR Apache-2.0",
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "typescript",
-      "prettier"
-    ]
-  },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
     "@cloudflare/workers-types": "4.20240729.0",
-    "@swc/cli": "^0.4.0",
-    "@swc/core": "^1.7.5",
     "@types/node": "^22.0.2",
     "miniflare": "3.20240725.0",
-    "tsup": "^8.2.3",
     "typescript": "^5.5.4",
     "wrangler": "3.68.0"
   },
@@ -35,12 +25,10 @@
   },
   "trustedDependencies": [
     "@biomejs/biome",
-    "esbuild",
     "workerd"
   ],
   "patchedDependencies": {
     "safe-buffer@5.2.1": "patches/safe-buffer@5.2.1.patch",
     "htmlparser2@3.10.1": "patches/htmlparser2@3.10.1.patch"
-  },
-  "type": "commonjs"
+  }
 }
