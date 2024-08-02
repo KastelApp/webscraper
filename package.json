@@ -1,0 +1,42 @@
+{
+  "name": "worker-typescript-template",
+  "version": "1.0.0",
+  "description": "Cloudflare worker TypeScript template",
+  "scripts": {
+    "dev": "bunx wrangler dev",
+    "publish": "bun run format && bun run lint && bunx wrangler deploy",
+    "format": "biome format --write ./src",
+    "lint": "biome lint --write ./src"
+  },
+  "author": "author",
+  "license": "MIT OR Apache-2.0",
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "typescript",
+      "prettier"
+    ]
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@cloudflare/workers-types": "4.20240729.0",
+    "@types/node": "^22.0.2",
+    "miniflare": "3.20240725.0",
+    "typescript": "^5.5.4",
+    "wrangler": "3.68.0"
+  },
+  "dependencies": {
+    "@types/cheerio": "^0.22.35",
+    "cheerio": "0.22.0",
+    "robots-parser": "^3.0.1"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "esbuild",
+    "workerd"
+  ],
+  "patchedDependencies": {
+    "safe-buffer@5.2.1": "patches/safe-buffer@5.2.1.patch",
+    "htmlparser2@3.10.1": "patches/htmlparser2@3.10.1.patch"
+  }
+}

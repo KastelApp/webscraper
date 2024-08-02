@@ -1,0 +1,96 @@
+diff --git a/lib/Parser.js b/lib/Parser.js
+index 25ebdb1f2a08f1a9631c67559dc0774842c11dba..e625bd273af15f55714594db6a05cf983878975e 100644
+--- a/lib/Parser.js
++++ b/lib/Parser.js
+@@ -130,7 +130,77 @@ function Parser(cbs, options) {
+     if (this._cbs.onparserinit) this._cbs.onparserinit(this);
+ }
+ 
+-require("inherits")(Parser, require("events").EventEmitter);
++
++class EventEmitter {
++    constructor() {
++        this._events = this._events || {};
++        this._maxListeners = this._maxListeners || undefined;
++    }
++
++    emit(type, ...args) {
++        if (type === 'error' && (!this._events || !this._events.error || (Array.isArray(this._events.error) && !this._events.error.length))) {
++            if (arguments[1] instanceof Error) {
++                throw arguments[1];
++            } else {
++                throw new Error('Uncaught, unspecified "error" event.');
++            }
++        }
++
++        if (!this._events) return false;
++        const handler = this._events[type];
++        if (!handler) return false;
++
++        if (typeof handler === 'function') {
++            Reflect.apply(handler, this, args);
++        } else {
++            const handlers = handler.slice();
++            for (const handler of handlers) {
++                Reflect.apply(handler, this, args);
++            }
++        }
++
++        return true;
++    }
++
++    on(type, listener) {
++        if (!this._events) this._events = Object.create(null);
++        if (!this._events[type]) this._events[type] = listener;
++        else if (typeof this._events[type] === 'function') this._events[type] = [this._events[type], listener];
++        else this._events[type].push(listener);
++    }
++
++    once(type, listener) {
++        const wrapped = (...args) => {
++            this.off(type, wrapped);
++            Reflect.apply(listener, this, args);
++        };
++        wrapped.listener = listener;
++        this.on(type, wrapped);
++    }
++
++    off(type, listener) {
++        if (!this._events || !this._events[type]) return;
++        const list = this._events[type];
++        if (list === listener || (list.listener && list.listener === listener)) {
++            delete this._events[type];
++        } else if (typeof list !== 'function') {
++            const index = list.indexOf(listener);
++            if (index > -1) list.splice(index, 1);
++        }
++    }
++
++    removeAllListeners(type) {
++        if (!this._events) return;
++        if (type) delete this._events[type];
++        else this._events = Object.create(null);
++    }
++
++    setMaxListeners(n) {
++        this._maxListeners = n;
++    }
++}
++
++require("inherits")(Parser, EventEmitter);
+ 
+ Parser.prototype._updatePosition = function(initialOffset) {
+     if (this.endIndex === null) {
+diff --git a/lib/WritableStream.js b/lib/WritableStream.js
+index ac45b49f9eb32c398b2f3bb9be4745c8cedfe089..5e8cadb384993b5944d1d965abaebf0d5d92fe68 100644
+--- a/lib/WritableStream.js
++++ b/lib/WritableStream.js
+@@ -3,7 +3,7 @@ module.exports = Stream;
+ var Parser = require("./Parser.js");
+ var WritableStream = require("readable-stream").Writable;
+ var StringDecoder = require("string_decoder").StringDecoder;
+-var Buffer = require("buffer").Buffer;
++var Buffer = require("node:buffer").Buffer;
+ 
+ function Stream(cbs, options) {
+     var parser = (this._parser = new Parser(cbs, options));

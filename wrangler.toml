@@ -1,0 +1,7 @@
+main = "./src/index.ts"
+name = "web-scraper"
+compatibility_date = "2024-07-29"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+mediaUrl = "https://media.kastelapp.com"
