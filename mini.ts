@@ -5,5 +5,12 @@ const mf = new Miniflare({
     scriptPath: "./dist/index.js",
     compatibilityDate: "2024-07-29",
     compatibilityFlags: ["nodejs_compat"],
-    port: 8080
+    port: 8080,
+    workers: [{
+        name: "worker",
+        modules: [{
+            type: "ESModule",
+            path: "./dist/index.js",
+        }]
+    }]
 })
