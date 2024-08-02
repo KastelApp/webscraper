@@ -24,6 +24,7 @@
     "@swc/core": "^1.7.5",
     "@types/node": "^22.0.2",
     "miniflare": "3.20240725.0",
+    "tsup": "^8.2.3",
     "typescript": "^5.5.4",
     "wrangler": "3.68.0"
   },
