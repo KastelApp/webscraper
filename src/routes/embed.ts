@@ -44,8 +44,7 @@ const request: Handler = async (ctx) => {
 	}
 
 	const cache = caches.default;
-	const cacheKey = new Request(`embed-${targetUrl}`, ctx.request);
-	const [response, error] = await ctx.promiseHandler(cache.match(cacheKey));
+	const [response, error] = await ctx.promiseHandler(cache.match(url));
 
 	if (error) {
 		console.error(error);
@@ -183,7 +182,7 @@ const request: Handler = async (ctx) => {
 	newRes.headers.append("Cache-Control", "s-maxage=600"); // Cache for 10 minutes
 	newRes.headers.append("X-URL", targetUrl);
 
-	ctx.ctx.waitUntil(cache.put(cacheKey, newRes.clone()));
+	ctx.ctx.waitUntil(cache.put(url, newRes.clone()));
 
 	return newRes;
 };
