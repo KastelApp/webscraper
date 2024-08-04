@@ -68,17 +68,17 @@ const convertOgObjectToEmbed = (ogObject: any): Embed => {
 	// const authorIconUrl = extractUrl(ogObject?.twitter?.image, "src") || extractUrl(ogObject, "image");
 	let authorUrl = extractUrl(ogObject?.og, "url") || extractUrl(ogObject, "url");
 
-    if (authorUrl && !authorName && title) {
-        authorName = title;
-        title = undefined;
-    }
-    
-    if (title && authorUrl && url && authorUrl === url) {
-        authorUrl = undefined;
-    }
-    
-    console.log(title, description, color, url, authorName, authorUrl);
-    
+	if (authorUrl && !authorName && title) {
+		authorName = title;
+		title = undefined;
+	}
+
+	if (title && authorUrl && url && authorUrl === url) {
+		authorUrl = undefined;
+	}
+
+	console.log(title, description, color, url, authorName, authorUrl);
+
 	return {
 		title,
 		description,

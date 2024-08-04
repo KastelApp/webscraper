@@ -5,14 +5,15 @@ import embed from "./routes/embed.ts";
 
 export interface Env {
 	mediaUrl: string;
+	authHeader: string;
 }
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		return new RouteHandler()
 			.append("/", home)
-			.append("/metadata", metadata)
-			.append("/embed", embed)
+			.append("/metadata", metadata, true)
+			.append("/embed", embed, true)
 			.handle(request, env, ctx);
 	},
 };

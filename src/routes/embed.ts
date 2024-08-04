@@ -9,7 +9,7 @@ interface MetaData {
 }
 
 const transformMetaTags = (metaTags: Record<string, string>): MetaData => {
-    console.log(metaTags)
+	console.log(metaTags);
 	const result: MetaData = {};
 
 	for (const key in metaTags) {
@@ -17,19 +17,19 @@ const transformMetaTags = (metaTags: Record<string, string>): MetaData => {
 		const parts = key.split(":");
 
 		parts.reduce<MetaData>((acc, part, index) => {
-            if (index === parts.length - 1) {
-                if (Array.isArray(acc[part])) {
-                    acc[part].push(value as unknown as MetaData);
-                } else if (acc[part]) {
-                    acc[part] = [acc[part] as unknown as MetaData, value as unknown as MetaData];
-                } else {
-                    acc[part] = value;
-                }
-            } else if (typeof acc[part] === "string") {
-                acc[part] = { [part]: acc[part] };
-            } else {
-                acc[part] = acc[part] || {};
-            }
+			if (index === parts.length - 1) {
+				if (Array.isArray(acc[part])) {
+					acc[part].push(value as unknown as MetaData);
+				} else if (acc[part]) {
+					acc[part] = [acc[part] as unknown as MetaData, value as unknown as MetaData];
+				} else {
+					acc[part] = value;
+				}
+			} else if (typeof acc[part] === "string") {
+				acc[part] = { [part]: acc[part] };
+			} else {
+				acc[part] = acc[part] || {};
+			}
 
 			return acc[part] as MetaData;
 		}, result);
@@ -173,16 +173,9 @@ const request: Handler = async (ctx) => {
 
 	const transformedMetaTags = transformMetaTags(metaTags);
 
-  
-	const newRes = new Response(
-		JSON.stringify(convertOgObjectToEmbed(transformedMetaTags),
-			null,
-			2,
-		),
-		{
-			headers: { "Content-Type": "application/json" },
-		},
-	);
+	const newRes = new Response(JSON.stringify(convertOgObjectToEmbed(transformedMetaTags), null, 2), {
+		headers: { "Content-Type": "application/json" },
+	});
 
 	// newRes.headers.append("Cache-Control", "s-maxage=600"); // Cache for 10 minutes
 	newRes.headers.append("X-URL", targetUrl);

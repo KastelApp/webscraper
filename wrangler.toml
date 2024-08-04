@@ -5,3 +5,4 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 mediaUrl = "https://media.kastelapp.com"
+authHeader = "Bearer WC4F*rSw6$nyEuecLqb%HzFnVHdD^L#VGfgnBxM7XDwSsTfrMB6L4QzS@5VRzfzscd&oFGPDt87qv&6KiVXSfGxmQuE&kTecNzGkyYTeofZ8iiD2%^NSkLU#Xr2JBGaURm*qM#$sExaRMTydFWZ2W4LHJLs6LixBbMrBWuSv&GTyid$W&qi2UBCge!Tcm4ES^36eYMfiJgyj@csvRc4@pTh6^3YGbM%yftqAA$EKoz%KXzAsUUjB2uX!cZKLrPP9"
