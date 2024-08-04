@@ -25,6 +25,7 @@
   },
   "trustedDependencies": [
     "@biomejs/biome",
+    "esbuild",
     "workerd"
   ],
   "patchedDependencies": {

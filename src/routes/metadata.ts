@@ -5,6 +5,7 @@ const request: Handler = async (ctx) => {
 	const url = new URL(ctx.request.url);
 
 	const targetUrl = url.searchParams.get("url");
+	const includeThumbhash = url.searchParams.get("thumbhash");
 
 	if (!targetUrl) {
 		return new Response(JSON.stringify(errorCodes.NO_URL_PROVIDED), {
@@ -83,12 +84,35 @@ const request: Handler = async (ctx) => {
 			: null;
 	const frameUrl = isVideo ? `${ctx.env.mediaUrl}/frame/${fixedTargetUrl}` : null;
 
+	let thumbhash: string | null = null;
+	
+	if (isImage && includeThumbhash) {
+		const [thumbhashResponse, thumbhashError] = await ctx.promiseHandler(
+			fetch(`${ctx.env.mediaUrl}/thumbhash/${fixedTargetUrl}`)
+		);
+
+		if (thumbhashError) {
+			console.error(thumbhashError);
+		}
+
+		if (thumbhashResponse) {
+			const [thumbhashData, thumbhashDataError] = await ctx.promiseHandler(thumbhashResponse.json() as Promise<{ thumbhash: string }>);
+			
+			if (thumbhashDataError) {
+				console.error(thumbhashDataError);
+			}
+			
+			thumbhash = thumbhashData?.thumbhash ?? null;
+		}
+	}
+	
 	const newRes = new Response(
 		JSON.stringify({
 			mimetype: contentType,
 			mediaUrl,
 			embed: contentType?.startsWith("text/html") ?? false,
 			frameUrl,
+			thumbhash,
 		}),
 		{
 			headers: { "Content-Type": "application/json" },

@@ -22,7 +22,7 @@ interface EmbedField {
 interface EmbedAuthor {
 	name: string;
 	authorID?: string;
-	iconUrl: string;
+	iconUrl?: string;
 	url: string;
 }
 
