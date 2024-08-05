@@ -50,6 +50,7 @@ const embedMappings = {
 };
 
 const convertOgObjectToEmbed = (ogObject: any): Embed => {
+	// todo: possibly open source only this portion so people can help build out embeds better
 	console.log(ogObject);
 	// ? using the mappings as above
 	let title =

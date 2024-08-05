@@ -10,10 +10,13 @@ class RouteHandler {
 	 * The endpoints that the route handler will handle (Do not modify directly)
 	 * @private
 	 */
-	private _endpoints: Map<string, {
-		handler: Handler;
-		authRequired: boolean;
-	}> = new Map();
+	private _endpoints: Map<
+		string,
+		{
+			handler: Handler;
+			authRequired: boolean;
+		}
+	> = new Map();
 
 	public request!: Request;
 
@@ -73,7 +76,7 @@ class RouteHandler {
 
 			return new Response("Not Found", { status: 404 });
 		}
-		
+
 		if (handler.authRequired && request.headers.get("Authorization") !== env.authHeader) {
 			console.error(`Unauthorized request to ${path}`);
 

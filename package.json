@@ -4,9 +4,10 @@
   "description": "Cloudflare worker TypeScript template",
   "scripts": {
     "dev": "bunx wrangler dev",
-    "publish": "bun run format && bun run lint && bunx wrangler deploy",
+    "publish": "bun run prepublish && bunx wrangler deploy",
     "format": "biome format --write ./src",
-    "lint": "biome lint --write ./src"
+    "lint": "biome lint --write ./src",
+    "prepublish": "bun run format && bun run lint"
   },
   "author": "author",
   "license": "MIT OR Apache-2.0",

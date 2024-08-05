@@ -2,7 +2,7 @@ import { load } from "cheerio";
 import { errorCodes } from "../utils/errorCodes.ts";
 import type { Handler } from "../utils/RouteHandler.ts";
 import robotsParser from "robots-parser";
-import { convertOgObjectToEmbed, extractString, extractUrl } from "../utils/misc.ts";
+import { convertOgObjectToEmbed } from "../utils/misc.ts";
 
 interface MetaData {
 	[key: string]: string | MetaData | MetaData[];
