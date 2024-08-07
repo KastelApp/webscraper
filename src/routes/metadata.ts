@@ -32,7 +32,7 @@ const request: Handler = async (ctx) => {
 	if (response) {
 		return response;
 	}
-	
+
 	const robotsUrl = new URL(targetUrl);
 
 	robotsUrl.pathname = "/robots.txt";
@@ -102,7 +102,9 @@ const request: Handler = async (ctx) => {
 		JSON.stringify({
 			mimetype: contentType,
 			mediaUrl,
-			embed: contentType?.startsWith("text/html") && robots.isAllowed(targetUrl, "KastelBot/1.0 (+https://kastel.dev/docs/topics/scraping)"),
+			embed:
+				contentType?.startsWith("text/html") &&
+				robots.isAllowed(targetUrl, "KastelBot/1.0 (+https://kastel.dev/docs/topics/scraping)"),
 			frameUrl,
 			thumbhash,
 			linkShortner: {
