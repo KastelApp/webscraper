@@ -12,6 +12,12 @@ const fetchMetaData = async (
 	getOnFail = true,
 	method: "HEAD" | "GET" = "HEAD",
 ): Promise<(globalThis.Response & { headFail: boolean }) | null> => {
+	const signal = new AbortController();
+
+	setTimeout(() => {
+		signal.abort();
+	}, 8000);
+
 	const [fetchResponse, fetchError] = await promiseHandler(
 		fetch(url, {
 			headers: {
@@ -45,6 +51,7 @@ const fetchMetaData = async (
 				...(method === "GET" ? { Range: "bytes=0-1048576" } : {}),
 			},
 			method: method,
+			signal: signal.signal,
 		}),
 	);
 

@@ -14,16 +14,28 @@ const trackRedirects = async (
 	const visitedUrls: string[] = [];
 
 	while (currentUrl) {
-		visitedUrls.push(currentUrl);
-		const [response, error] = await promiseHandler(fetch(currentUrl, { method: method, redirect: "manual" }));
+		const signal = new AbortController();
 
-		console.log(response, error);
+		setTimeout(() => {
+			signal.abort();
+		}, 8000);
+
+		visitedUrls.push(currentUrl);
+
+		const [response, error] = await promiseHandler(
+			fetch(currentUrl, {
+				method: method,
+				redirect: "manual",
+				signal: signal.signal,
+			}),
+		);
 
 		if (error || !response) {
 			return { isShortener: false, redirectChain: visitedUrls };
 		}
 
 		const location = response.headers.get("location");
+
 		if (!location) {
 			break;
 		}

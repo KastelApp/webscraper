@@ -42,7 +42,7 @@ const request: Handler = async (ctx) => {
 	const url = new URL(ctx.request.url);
 
 	const targetUrl = url.searchParams.get("url");
-	const debug = url.searchParams.get("debug");
+	const raw = url.searchParams.get("raw");
 
 	if (!targetUrl) {
 		return new Response(JSON.stringify(errorCodes.NO_URL_PROVIDED), {
@@ -172,12 +172,13 @@ const request: Handler = async (ctx) => {
 	}
 
 	const transformedMetaTags = transformMetaTags(metaTags);
+	const embed = convertOgObjectToEmbed(transformedMetaTags);
 
-	const newRes = new Response(JSON.stringify(convertOgObjectToEmbed(transformedMetaTags), null, 2), {
+	const newRes = new Response(JSON.stringify(raw === "true" ? transformedMetaTags : embed, null, 2), {
 		headers: { "Content-Type": "application/json" },
 	});
 
-	// newRes.headers.append("Cache-Control", "s-maxage=600"); // Cache for 10 minutes
+	newRes.headers.append("Cache-Control", "s-maxage=600"); // Cache for 10 minutes
 	newRes.headers.append("X-URL", targetUrl);
 
 	ctx.ctx.waitUntil(cache.put(url, newRes.clone()));
