@@ -77,7 +77,11 @@ class RouteHandler {
 			return new Response("Not Found", { status: 404 });
 		}
 
-		if (handler.authRequired && request.headers.get("Authorization") !== env.authHeader && process.env.NODE_ENV !== "development") {
+		if (
+			handler.authRequired &&
+			request.headers.get("Authorization") !== env.authHeader &&
+			process.env.NODE_ENV !== "development"
+		) {
 			console.error(`Unauthorized request to ${path}`);
 
 			return new Response("Unauthorized", { status: 401 });

@@ -98,23 +98,24 @@ const request: Handler = async (ctx) => {
 	}
 
 	const { isShortener, redirectChain } = await trackRedirects(targetUrl, fetchResponse?.headFail ? "GET" : "HEAD");
-	
+
 	const earlyEmbed: Partial<Embed> = {};
 
 	if (isVideo || isImage) {
 		if (isImage) {
 			earlyEmbed.type = "Image";
-			
 		}
 
-		earlyEmbed.files = [{
-			url: mediaUrl!,
-			rawUrl: targetUrl,
-			type: isImage ? "Image" : "Video",
-			thumbHash: thumbhash,
-		}]
+		earlyEmbed.files = [
+			{
+				url: mediaUrl!,
+				rawUrl: targetUrl,
+				type: isImage ? "Image" : "Video",
+				thumbHash: thumbhash,
+			},
+		];
 	}
-	
+
 	const newRes = new Response(
 		JSON.stringify({
 			mimetype: contentType,

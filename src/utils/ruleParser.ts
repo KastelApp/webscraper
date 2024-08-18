@@ -5,14 +5,14 @@ interface Base {
 interface NonTypedMappingRule extends Base {
 	values: (string | [string, number])[];
 	parse?: (value: any) => any | Promise<any>;
-};
+}
 
-interface TypedMappingRule extends Base{
+interface TypedMappingRule extends Base {
 	options: MappingRules;
 	type: "array";
-};
+}
 
-type MappingRule = NonTypedMappingRule | TypedMappingRule
+type MappingRule = NonTypedMappingRule | TypedMappingRule;
 
 interface MappingRules {
 	[key: string]: MappingRule | MappingRules;
@@ -26,17 +26,16 @@ function isNonTypedRule(rule: MappingRule | MappingRules): rule is NonTypedMappi
 	return !isTypedRule(rule);
 }
 
-
 const getParentPath = (path: string): string => {
 	const keys = path.split(".");
 	keys.pop();
 	return keys.join(".");
-}
+};
 
 const getLastPathSegment = (path: string): string => {
 	const keys = path.split(".");
 	return keys[keys.length - 1];
-}
+};
 
 const getValueFromPath = (data: any, path: string): any => {
 	const keys = path.split(".");
@@ -48,9 +47,9 @@ const getValueFromPath = (data: any, path: string): any => {
 		value = value[key];
 	}
 	return value;
-}
+};
 
-const extractAllValues = (data: any, paths: (string | [string, number])[]): any[] =>{
+const extractAllValues = (data: any, paths: (string | [string, number])[]): any[] => {
 	const results: any[] = [];
 
 	for (const path of paths) {
@@ -76,9 +75,9 @@ const extractAllValues = (data: any, paths: (string | [string, number])[]): any[
 	}
 
 	return results;
-}
+};
 
-const parseMapping =(rules: MappingRules, data: any): any => {
+const parseMapping = (rules: MappingRules, data: any): any => {
 	const result: Record<string, any> = {};
 
 	for (const key of Object.keys(rules)) {
@@ -127,17 +126,16 @@ const parseMapping =(rules: MappingRules, data: any): any => {
 	}
 
 	return result;
-}
-
+};
 
 export {
-    type Base,
-    type NonTypedMappingRule,
-    type TypedMappingRule,
-    type MappingRule,
-    type MappingRules,
-    isTypedRule,
-    isNonTypedRule,
-    parseMapping,
-    extractAllValues
-}
+	type Base,
+	type NonTypedMappingRule,
+	type TypedMappingRule,
+	type MappingRule,
+	type MappingRules,
+	isTypedRule,
+	isNonTypedRule,
+	parseMapping,
+	extractAllValues,
+};

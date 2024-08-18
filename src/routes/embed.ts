@@ -2,7 +2,6 @@ import { errorCodes } from "../utils/errorCodes.ts";
 import type { Handler } from "../utils/RouteHandler.ts";
 import EmbedParser from "../utils/EmbedParser.ts";
 
-
 const request: Handler = async (ctx) => {
 	const url = new URL(ctx.request.url);
 
@@ -32,14 +31,13 @@ const request: Handler = async (ctx) => {
 		return response;
 	}
 
-
 	const embedParser = new EmbedParser(targetUrl, ctx.env);
-	
-	const embed = await embedParser.scrape(raw === "true")
-	
+
+	const embed = await embedParser.scrape(raw === "true");
+
 	const newRes = new Response(JSON.stringify(embed), {
 		headers: { "Content-Type": "application/json" },
-		status: "code" in embed ? embed.code === errorCodes.RESPECTING_ROBOTS.code ? 403 : 500 : 200,
+		status: "code" in embed ? (embed.code === errorCodes.RESPECTING_ROBOTS.code ? 403 : 500) : 200,
 	});
 
 	if (process.env.NODE_ENV !== "development") {
