@@ -3,6 +3,7 @@ import { errorCodes } from "../utils/errorCodes.ts";
 import fetchMetaData from "../utils/fetchMetaData.ts";
 import type { Handler } from "../utils/RouteHandler.ts";
 import trackRedirects from "../utils/trackRedirects.ts";
+import type { Embed } from "../types.ts";
 
 const request: Handler = async (ctx) => {
 	const url = new URL(ctx.request.url);
@@ -97,7 +98,23 @@ const request: Handler = async (ctx) => {
 	}
 
 	const { isShortener, redirectChain } = await trackRedirects(targetUrl, fetchResponse?.headFail ? "GET" : "HEAD");
+	
+	const earlyEmbed: Partial<Embed> = {};
 
+	if (isVideo || isImage) {
+		if (isImage) {
+			earlyEmbed.type = "Image";
+			
+		}
+
+		earlyEmbed.files = [{
+			url: mediaUrl!,
+			rawUrl: targetUrl,
+			type: isImage ? "image" : "video",
+			thumbHash: thumbhash,
+		}]
+	}
+	
 	const newRes = new Response(
 		JSON.stringify({
 			mimetype: contentType,
@@ -111,13 +128,19 @@ const request: Handler = async (ctx) => {
 				isShortener,
 				redirectChain,
 			},
+			// ? Early embed is ONLY shown in the rare cases where we don't need to fetch /embed to scrape the site
+			// ? Mainly its for images and videosz
+			earlyEmbed,
 		}),
 		{
 			headers: { "Content-Type": "application/json" },
 		},
 	);
 
-	newRes.headers.append("Cache-Control", "s-maxage=600"); // ? Cache for 10 minutes
+	if (process.env.NODE_ENV !== "development") {
+		newRes.headers.append("Cache-Control", "s-maxage=600"); // Cache for 10 minutes
+	}
+
 	newRes.headers.append("X-URL", targetUrl);
 
 	ctx.ctx.waitUntil(cache.put(url, newRes.clone()));

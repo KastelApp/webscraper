@@ -14,14 +14,15 @@
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
     "@cloudflare/workers-types": "4.20240729.0",
-    "@types/node": "^22.0.2",
+    "@types/node": "^22.2.0",
     "miniflare": "3.20240725.0",
     "typescript": "^5.5.4",
-    "wrangler": "3.68.0"
+    "wrangler": "3.71.0",
+    "@types/bun": "latest"
   },
   "dependencies": {
     "@types/cheerio": "^0.22.35",
-    "cheerio": "0.22.0",
+    "cheerio": "1.0.0",
     "robots-parser": "^3.0.1"
   },
   "trustedDependencies": [
@@ -32,5 +33,6 @@
   "patchedDependencies": {
     "safe-buffer@5.2.1": "patches/safe-buffer@5.2.1.patch",
     "htmlparser2@3.10.1": "patches/htmlparser2@3.10.1.patch"
-  }
+  },
+  "type": "module"
 }
