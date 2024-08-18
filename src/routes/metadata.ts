@@ -104,6 +104,8 @@ const request: Handler = async (ctx) => {
 	if (isVideo || isImage) {
 		if (isImage) {
 			earlyEmbed.type = "Image";
+		} else if (isVideo) {
+			earlyEmbed.type = "Video";
 		}
 
 		earlyEmbed.files = [

@@ -238,13 +238,13 @@ class EmbedParser {
 			const url = new URL(this.url);
 
 			let vTag: string | null = null;
-			
+
 			if (url.pathname.startsWith("/shorts")) {
 				vTag = url.pathname.split("/")[2];
 			} else {
 				vTag = url.searchParams.get("v");
 			}
-			
+
 			embed.iframeSource = {
 				provider: "Youtube",
 				url: `https://www.youtube.com/embed/${vTag}`,
