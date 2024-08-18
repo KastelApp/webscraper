@@ -3,7 +3,7 @@ interface EmbedFiles {
 	url: string;
 	height?: number;
 	width?: number;
-	type: "image" | "video";
+	type: "Image" | "Video";
 	rawUrl: string;
 	thumbHash?: string | null;
 }

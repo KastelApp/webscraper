@@ -248,7 +248,7 @@ class EmbedParser {
 
 			embed.files = [
 				{
-					type: "image",
+					type: "Image",
 					rawUrl: `https://i.ytimg.com/vi/${vTag}/maxresdefault.jpg`,
 					url: `${this.env.mediaUrl}/external/${encodeURIComponent(`https:/i.ytimg.com/vi/${vTag}/maxresdefault.jpg`)}`,
 					name: "YoutubeThumbnail",

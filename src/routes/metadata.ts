@@ -110,7 +110,7 @@ const request: Handler = async (ctx) => {
 		earlyEmbed.files = [{
 			url: mediaUrl!,
 			rawUrl: targetUrl,
-			type: isImage ? "image" : "video",
+			type: isImage ? "Image" : "Video",
 			thumbHash: thumbhash,
 		}]
 	}
