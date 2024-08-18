@@ -445,6 +445,24 @@ class EmbedParser {
 
 		return json;
 	}
+	
+	public async fetchThumbhash(url: string): Promise<string | null> {
+		const [thumbhashResponse, thumbhashError] = await promiseHandler(fetch(`${this.env.mediaUrl}/thumbhash/${url}`));
+
+		if (thumbhashError || !thumbhashResponse) {
+			return null;
+		}
+
+		const [thumbhashData, thumbhashDataError] = await promiseHandler(
+			thumbhashResponse.json() as Promise<{ thumbhash: string }>,
+		);
+
+		if (thumbhashDataError) {
+			console.error(thumbhashDataError);
+		}
+
+		return thumbhashData?.thumbhash ?? null;
+	}
 
 	public isYoutube(): boolean {
 		return this.url.startsWith("https://www.youtube.com") || this.url.startsWith("https://youtube.com");
@@ -465,24 +483,6 @@ class EmbedParser {
 
 	public isSpotify(): boolean {
 		return this.url.startsWith("https://open.spotify.com");
-	}
-
-	public async fetchThumbhash(url: string): Promise<string | null> {
-		const [thumbhashResponse, thumbhashError] = await promiseHandler(fetch(`${this.env.mediaUrl}/thumbhash/${url}`));
-
-		if (thumbhashError || !thumbhashResponse) {
-			return null;
-		}
-
-		const [thumbhashData, thumbhashDataError] = await promiseHandler(
-			thumbhashResponse.json() as Promise<{ thumbhash: string }>,
-		);
-
-		if (thumbhashDataError) {
-			console.error(thumbhashDataError);
-		}
-
-		return thumbhashData?.thumbhash ?? null;
 	}
 }
 
