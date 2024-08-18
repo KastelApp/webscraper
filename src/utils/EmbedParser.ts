@@ -376,6 +376,8 @@ class EmbedParser {
 			metaTags["youtube_author"] = author as string;
 			metaTags["youtube_author_link"] = link as string;
 			metaTags["youtube_channel_icon"] = channelIcon as string;
+			
+			metaTags["theme-color"] = "#FF0000";
 		}
 
 		const transformedMetaTags = this.transformMetaTags(metaTags as Record<string, string>);
