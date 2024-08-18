@@ -126,8 +126,6 @@ class EmbedParser {
 
 		robotsUrl.pathname = "/robots.txt";
 
-		console.log(robotsUrl.toString());
-
 		const [robotsResponse, robotsError] = await promiseHandler(fetch(robotsUrl.toString()));
 
 		if (robotsError || !robotsResponse) {
@@ -261,8 +259,6 @@ class EmbedParser {
 			embed.type = "Site";
 		}
 
-		console.log(ogObject);
-
 		return embed;
 	}
 
@@ -381,8 +377,6 @@ class EmbedParser {
 			metaTags["youtube_author_link"] = link as string;
 			metaTags["youtube_channel_icon"] = channelIcon as string;
 		}
-
-		console.log(metaTags);
 
 		const transformedMetaTags = this.transformMetaTags(metaTags as Record<string, string>);
 		const embed = this.parseEmbed(transformedMetaTags, this.isYoutube() ? this.youtubeRules : this.baseRules);
