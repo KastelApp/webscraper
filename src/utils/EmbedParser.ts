@@ -260,6 +260,8 @@ class EmbedParser {
 				},
 			];
 
+			embed.url = this.url;
+
 			embed.type = "Iframe";
 		} else {
 			embed.type = "Site";
