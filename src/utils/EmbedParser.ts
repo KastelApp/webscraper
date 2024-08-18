@@ -237,8 +237,14 @@ class EmbedParser {
 		if (this.isYoutube()) {
 			const url = new URL(this.url);
 
-			const vTag = url.searchParams.get("v");
-
+			let vTag: string | null = null;
+			
+			if (url.pathname.startsWith("/shorts")) {
+				vTag = url.pathname.split("/")[2];
+			} else {
+				vTag = url.searchParams.get("v");
+			}
+			
 			embed.iframeSource = {
 				provider: "Youtube",
 				url: `https://www.youtube.com/embed/${vTag}`,
@@ -376,7 +382,7 @@ class EmbedParser {
 			metaTags["youtube_author"] = author as string;
 			metaTags["youtube_author_link"] = link as string;
 			metaTags["youtube_channel_icon"] = channelIcon as string;
-			
+
 			metaTags["theme-color"] = "#FF0000";
 		}
 
@@ -441,7 +447,7 @@ class EmbedParser {
 
 		return json;
 	}
-	
+
 	public async fetchThumbhash(url: string): Promise<string | null> {
 		const [thumbhashResponse, thumbhashError] = await promiseHandler(fetch(`${this.env.mediaUrl}/thumbhash/${url}`));
 
