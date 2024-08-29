@@ -386,6 +386,33 @@ class EmbedParser {
 			metaTags["youtube_channel_icon"] = channelIcon as string;
 
 			metaTags["theme-color"] = "#FF0000";
+
+			if (!attemptedOembed) {
+				// ? So sometimes we get blacklisted by youtube, so instead we generate the oembed ourselves via https://www.youtube.com/oembed?format=json&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DRZs5Hz1klno
+				const url = new URL(this.url);
+
+				let vTag: string | null = null;
+
+				if (url.pathname.startsWith("/shorts")) {
+					vTag = url.pathname.split("/")[2];
+				} else {
+					vTag = url.searchParams.get("v");
+				}
+
+				const oembed = await this.attemptOembed(
+					`https://www.youtube.com/oembed?format=json&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D${vTag}`,
+				);
+
+				if (oembed) {
+					Object.assign(metaTags, oembed);
+
+					const youtubeAuthor = oembed.author_name;
+					const youtubeAuthorLink = oembed.author_url;
+
+					metaTags["youtube_author"] = youtubeAuthor;
+					metaTags["youtube_author_link"] = youtubeAuthorLink;
+				}
+			}
 		}
 
 		const transformedMetaTags = this.transformMetaTags(metaTags as Record<string, string>);
@@ -469,7 +496,11 @@ class EmbedParser {
 	}
 
 	public isYoutube(): boolean {
-		return this.url.startsWith("https://www.youtube.com") || this.url.startsWith("https://youtube.com");
+		return (
+			this.url.startsWith("https://www.youtube.com") ||
+			this.url.startsWith("https://youtube.com") ||
+			this.url.startsWith("https://youtu.be")
+		);
 	}
 
 	public isTikTok(): boolean {

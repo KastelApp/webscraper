@@ -63,8 +63,14 @@ const request: Handler = async (ctx) => {
 	const robots = robotsParser(robotsUrl.toString(), robotsContent);
 	const fetchResponse = await fetchMetaData(targetUrl);
 	const contentType = fetchResponse ? fetchResponse.headers.get("content-type") : null;
-	const isImage = contentType?.startsWith("image/");
-	const isVideo = contentType?.startsWith("video/");
+	const isImage =
+		contentType?.startsWith("image/") &&
+		!contentType?.startsWith("image/svg+xml") &&
+		!contentType?.startsWith("image/gif");
+	const isVideo =
+		contentType?.startsWith("video/") ||
+		contentType?.startsWith("application/octet-stream") ||
+		contentType?.startsWith("image/gif");
 	const fixedTargetUrl = encodeURIComponent(targetUrl?.replace(/(https?):\/\//g, "$1:/"));
 	const mediaUrl = isImage
 		? `${ctx.env.mediaUrl}/external/${fixedTargetUrl}`
@@ -108,11 +114,16 @@ const request: Handler = async (ctx) => {
 			earlyEmbed.type = "Video";
 		}
 
+		// ? in the rare case that its a gif we want the type to be image
+		if (contentType?.startsWith("image/gif")) {
+			earlyEmbed.type = "Image";
+		}
+
 		earlyEmbed.files = [
 			{
 				url: mediaUrl!,
 				rawUrl: targetUrl,
-				type: isImage ? "Image" : "Video",
+				type: earlyEmbed.type as "Image" | "Video",
 				thumbHash: thumbhash,
 			},
 		];

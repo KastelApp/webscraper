@@ -82,7 +82,9 @@ class RouteHandler {
 			request.headers.get("Authorization") !== env.authHeader &&
 			process.env.NODE_ENV !== "development"
 		) {
-			console.error(`Unauthorized request to ${path}`);
+			console.error(
+				`Unauthorized request to ${path} | ${request.headers.get("Authorization") ?? request.headers.get("authorization")}`,
+			);
 
 			return new Response("Unauthorized", { status: 401 });
 		}
