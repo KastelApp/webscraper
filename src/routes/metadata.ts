@@ -78,16 +78,20 @@ const request: Handler = async (ctx) => {
 			: null;
 	const frameUrl = isVideo ? `${ctx.env.mediaUrl}/frame/${fixedTargetUrl}` : null;
 
-	const [metadataResponse, metadataError] = await ctx.promiseHandler(fetch(`${ctx.env.mediaUrl}/metadata/${fixedTargetUrl}`));
-	
+	const [metadataResponse, metadataError] = await ctx.promiseHandler(
+		fetch(`${ctx.env.mediaUrl}/metadata/${fixedTargetUrl}`),
+	);
+
 	if (metadataError) {
 		console.error(metadataError);
 	}
-	
+
 	console.log(metadataResponse);
-	
-	const [metadataData, metadataDataError] = metadataResponse ? await ctx.promiseHandler(metadataResponse.json() as Promise<{ thumbhash: string; height: number; width: number }>) : [null, null];
-	
+
+	const [metadataData, metadataDataError] = metadataResponse
+		? await ctx.promiseHandler(metadataResponse.json() as Promise<{ thumbhash: string; height: number; width: number }>)
+		: [null, null];
+
 	if (metadataDataError) {
 		console.error(metadataDataError);
 	}
