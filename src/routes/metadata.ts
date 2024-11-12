@@ -50,16 +50,14 @@ const request: Handler = async (ctx) => {
 
 	const [robotsContent, robotsContentText] = await ctx.promiseHandler(robotsResponse.text());
 
-	if (robotsContentText || !robotsContent) {
-		console.error(robotsContentText);
-
+	if (robotsContentText) {
 		return new Response(JSON.stringify(errorCodes.FAILED_TO_TRY_AND_RESPECT_BOTS), {
 			status: 500,
 			headers: { "Content-Type": "application/json" },
 		});
 	}
 
-	const robots = robotsParser(robotsUrl.toString(), robotsContent);
+	const robots = robotsContent ? robotsParser(robotsUrl.toString(), robotsContent) : null;
 	const fetchResponse = await fetchMetaData(targetUrl);
 	const contentType = fetchResponse ? fetchResponse.headers.get("content-type") : null;
 	const isImage =
@@ -85,8 +83,6 @@ const request: Handler = async (ctx) => {
 	if (metadataError) {
 		console.error(metadataError);
 	}
-
-	console.log(metadataResponse);
 
 	const [metadataData, metadataDataError] = metadataResponse
 		? await ctx.promiseHandler(metadataResponse.json() as Promise<{ thumbhash: string; height: number; width: number }>)
@@ -130,6 +126,7 @@ const request: Handler = async (ctx) => {
 			mediaUrl,
 			embed:
 				contentType?.startsWith("text/html") &&
+				robots &&
 				robots.isAllowed(targetUrl, "KastelBot/1.0 (+https://kastel.dev/docs/topics/scraping)"),
 			frameUrl,
 			thumbhash: metadataData?.thumbhash ?? null,
