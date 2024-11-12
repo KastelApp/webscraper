@@ -9,7 +9,6 @@ const request: Handler = async (ctx) => {
 	const url = new URL(ctx.request.url);
 
 	const targetUrl = url.searchParams.get("url");
-	const includeThumbhash = url.searchParams.get("thumbhash");
 
 	if (!targetUrl) {
 		return new Response(JSON.stringify(errorCodes.NO_URL_PROVIDED), {
@@ -79,28 +78,18 @@ const request: Handler = async (ctx) => {
 			: null;
 	const frameUrl = isVideo ? `${ctx.env.mediaUrl}/frame/${fixedTargetUrl}` : null;
 
-	let thumbhash: string | null = null;
-
-	if (isImage && includeThumbhash) {
-		const [thumbhashResponse, thumbhashError] = await ctx.promiseHandler(
-			fetch(`${ctx.env.mediaUrl}/thumbhash/${fixedTargetUrl}`),
-		);
-
-		if (thumbhashError) {
-			console.error(thumbhashError);
-		}
-
-		if (thumbhashResponse) {
-			const [thumbhashData, thumbhashDataError] = await ctx.promiseHandler(
-				thumbhashResponse.json() as Promise<{ thumbhash: string }>,
-			);
-
-			if (thumbhashDataError) {
-				console.error(thumbhashDataError);
-			}
-
-			thumbhash = thumbhashData?.thumbhash ?? null;
-		}
+	const [metadataResponse, metadataError] = await ctx.promiseHandler(fetch(`${ctx.env.mediaUrl}/metadata/${fixedTargetUrl}`));
+	
+	if (metadataError) {
+		console.error(metadataError);
+	}
+	
+	console.log(metadataResponse);
+	
+	const [metadataData, metadataDataError] = metadataResponse ? await ctx.promiseHandler(metadataResponse.json() as Promise<{ thumbhash: string; height: number; width: number }>) : [null, null];
+	
+	if (metadataDataError) {
+		console.error(metadataDataError);
 	}
 
 	const { isShortener, redirectChain } = await trackRedirects(targetUrl, fetchResponse?.headFail ? "GET" : "HEAD");
@@ -124,7 +113,9 @@ const request: Handler = async (ctx) => {
 				url: mediaUrl!,
 				rawUrl: targetUrl,
 				type: earlyEmbed.type as "Image" | "Video",
-				thumbHash: thumbhash,
+				thumbHash: metadataData?.thumbhash ?? null,
+				height: metadataData?.height,
+				width: metadataData?.width,
 			},
 		];
 	}
@@ -137,7 +128,7 @@ const request: Handler = async (ctx) => {
 				contentType?.startsWith("text/html") &&
 				robots.isAllowed(targetUrl, "KastelBot/1.0 (+https://kastel.dev/docs/topics/scraping)"),
 			frameUrl,
-			thumbhash,
+			thumbhash: metadataData?.thumbhash ?? null,
 			linkShortner: {
 				isShortener,
 				redirectChain,
